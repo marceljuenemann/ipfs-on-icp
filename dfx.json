@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "ic-ipfs-backend": {
+      "candid": "src/ic-ipfs-backend/ic-ipfs-backend.did",
+      "package": "ic-ipfs-backend",
+      "type": "rust"
+    },
+    "ic-ipfs-frontend": {
+      "dependencies": [
+        "ic-ipfs-backend"
+      ],
+      "source": [
+        "src/ic-ipfs-frontend/assets"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

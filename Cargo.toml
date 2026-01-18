@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/ic-ipfs-backend"
+]
+resolver = "2"

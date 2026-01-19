@@ -24,6 +24,9 @@ fn http_request(req: HttpRequest) -> HttpResponse {
     let response = HttpResponse::builder()
         .with_status_code(StatusCode::OK)
         .with_body("Hello World!".as_bytes())
+        .with_headers(vec![
+            ("Content-type".to_string(), "application/vnd.ipld.raw".to_string())
+        ])
         .build();
 
     response

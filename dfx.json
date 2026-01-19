@@ -10,7 +10,7 @@
         "ic-ipfs-backend"
       ],
       "source": [
-        "src/ic-ipfs-frontend/assets"
+        "src/ic-ipfs-frontend/dist/ipfs-on-icp/browser"
       ],
       "type": "assets"
     }

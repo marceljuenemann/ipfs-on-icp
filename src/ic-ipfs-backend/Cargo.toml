@@ -13,4 +13,5 @@ candid = "0.10"
 cid = "0.11.1"
 ic-cdk = "0.18"
 ic-cdk-timers = "0.12" # Feel free to remove this dependency if you don't need timers
+ic-http-certification = "3.0.3"
 multihash-codetable = { version = "0.1.4", features = ["sha2"] }

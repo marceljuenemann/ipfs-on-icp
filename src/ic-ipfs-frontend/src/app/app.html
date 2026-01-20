@@ -6,17 +6,31 @@
 
   <h2 class="mt-4">Upload</h2>
 
+  <p>
+    Selected files and directories will be split into IPFS blocks of no more than 1MB
+    using the <a href="https://specs.ipfs.tech/unixfs/">UnixFS</a> standard.
+  </p>
+
   <div class="mb-3">
     <input class="form-control" type="file" id="fileInput" (change)="onFileSelected($event)">
   </div>
 
+  <div *ngIf="blocksToUpload()" class="alert alert-info mt-3">
+    <div><b>Root CID:</b> {{ blocksToUpload()?.rootCid?.toString() }}</div>
+    <div><b>Blocks:</b></div>
+    <ul>
+      @for (block of blocksToUpload()?.blocks ?? []; track block.cid.toString()) {
+        <li>{{ block.cid.toString() }} ({{ block.bytes.length }} bytes)</li>
+      }
+    </ul>
+  </div>
+
+  <!--
   <button class="btn btn-primary" (click)="uploadFile()" [disabled]="!selectedFile">
     Upload
   </button>
+-->
 
-  <div *ngIf="uploadResult" class="alert alert-success mt-3">
-    {{ uploadResult }}
-  </div>
 
 
 

@@ -1,33 +1,26 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 
-import { createHelia } from 'helia';
-import { bytesToBlocks } from './ipfs';
+import { bytesToBlocks, UnixFsBlocks } from './ipfs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('ipfs-on-icp');
-  selectedFile: File | null = null;
-  uploadResult: string | null = null;
+  blocksToUpload = signal<UnixFsBlocks | null>(null);
 
   async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      console.log('Selected file:', file);
-      this.selectedFile = file;
-
-      const blocks = await bytesToBlocks(new Uint8Array(await file.arrayBuffer()));
-      console.log('Converted to blocks:', blocks);
+      this.blocksToUpload.set(await bytesToBlocks(new Uint8Array(await file.arrayBuffer())));
     }
   }
 
+  /*
   async uploadFile(): Promise<void> {
     if (!this.selectedFile) return;
 
@@ -40,6 +33,7 @@ export class App {
       this.uploadResult = `Error: ${error}`;
     }
   }
+  */
 
   async init() {
     /*

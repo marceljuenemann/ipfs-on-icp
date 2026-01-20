@@ -28,7 +28,9 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@dfinity/agent": "^3.4.3",
     "@helia/verified-fetch": "^6.2.0",
+    "@icp-sdk/core": "^5.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

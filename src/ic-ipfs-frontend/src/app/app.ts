@@ -2,9 +2,8 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
-import { createVerifiedFetch } from '@helia/verified-fetch';
-import { unixfs } from '@helia/unixfs';
 import { createHelia } from 'helia';
+import { bytesToBlocks } from './ipfs';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +15,6 @@ export class App {
   protected readonly title = signal('ipfs-on-icp');
   selectedFile: File | null = null;
   uploadResult: string | null = null;
-  private helia: Awaited<ReturnType<typeof createHelia>> | null = null;
-
-  constructor() {
-    this.init();
-  }
 
   async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
@@ -29,32 +23,10 @@ export class App {
       console.log('Selected file:', file);
       this.selectedFile = file;
 
-      try {
-        const fs = unixfs(this.helia!);
-        const data = await file.arrayBuffer();
-        const uint8Array = new Uint8Array(data);
-
-        // Add file to UnixFS and get CID
-        /*
-        const cid = await fs.addFile({
-          path: file.name,
-          content: uint8Array
-        });
-        */
-
-        const cid = await fs.addBytes(uint8Array);
-
-
-
-        console.log('UnixFS CID:', cid.toString());
-        this.uploadResult = `File ready: ${file.name} → ${cid.toString()}`;
-      } catch (error) {
-        console.error('Error creating UnixFS:', error);
-        this.uploadResult = `Error processing file: ${error}`;
-      }
+      const blocks = await bytesToBlocks(new Uint8Array(await file.arrayBuffer()));
+      console.log('Converted to blocks:', blocks);
     }
   }
-
 
   async uploadFile(): Promise<void> {
     if (!this.selectedFile) return;
@@ -70,14 +42,6 @@ export class App {
   }
 
   async init() {
-    // Initialize Helia for UnixFS operations
-    try {
-      this.helia = await createHelia({ start: false });
-      console.log('Helia initialized:', this.helia);
-    } catch (error) {
-      console.error('Failed to initialize Helia:', error);
-    }
-
     /*
     const resp = await fetch('http://uxrrr-q7777-77774-qaaaq-cai.raw.localhost:4943/ipfs/bafkreieq5jui4j25lacwomsqgjeswwl3y5zcdrresptwgmfylxo2depppq');
     */

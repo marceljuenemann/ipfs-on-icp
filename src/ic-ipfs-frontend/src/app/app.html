@@ -20,18 +20,28 @@
     <div><b>Blocks:</b></div>
     <ul>
       @for (block of blocksToUpload()?.blocks ?? []; track block.cid.toString()) {
-        <li>{{ block.cid.toString() }} ({{ block.bytes.length }} bytes)</li>
+        <li>
+          @let status = uploadStatus().get(block.cid.toString());
+          @if (status) {
+            @if (status === 'uploading') {
+              <span class="badge bg-primary">uploading</span>
+            } @else if (status === 'success') {
+              <span class="badge bg-success">success</span>
+            } @else if (status === 'duplicate') {
+              <span class="badge bg-warning">duplicate</span>
+            } @else {
+              <span class="badge bg-danger">{{ status.error }}</span>
+            }
+          }
+
+          {{ block.cid.toString() }} ({{ block.bytes.length }} bytes)
+        </li>
       }
     </ul>
+    <button class="btn btn-primary" (click)="uploadBlocks()">
+      Upload
+    </button>
   </div>
-
-  <!--
-  <button class="btn btn-primary" (click)="uploadFile()" [disabled]="!selectedFile">
-    Upload
-  </button>
--->
-
-
 
 
 </div>

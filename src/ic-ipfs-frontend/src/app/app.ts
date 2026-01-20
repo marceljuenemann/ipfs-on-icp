@@ -1,7 +1,8 @@
-import { Component, signal, WritableSignal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { bytesToBlocks, UnixFsBlocks } from './ipfs';
+import { Backend, UploadResult } from './backend';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,9 @@ import { bytesToBlocks, UnixFsBlocks } from './ipfs';
 })
 export class App {
   blocksToUpload = signal<UnixFsBlocks | null>(null);
+  uploadStatus = signal<Map<string, UploadResult | 'uploading'>>(new Map());
+
+  constructor(private backend: Backend) {}
 
   async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
@@ -20,20 +24,22 @@ export class App {
     }
   }
 
-  /*
-  async uploadFile(): Promise<void> {
-    if (!this.selectedFile) return;
-
-    try {
-      const data = await this.selectedFile.arrayBuffer();
-      // TODO: Call store_block canister method with file data and CID
-      this.uploadResult = `Uploading ${this.selectedFile.name} (${this.selectedFile.size} bytes)...`;
-      console.log('File ready to upload:', this.selectedFile.name);
-    } catch (error) {
-      this.uploadResult = `Error: ${error}`;
+  async uploadBlocks(): Promise<void> {
+    const blocks = this.blocksToUpload()!;
+    for (const block of blocks.blocks) {
+      this.setUploadStatus(block.cid.toString(), 'uploading');
+      this.backend.uploadBlock(block).then(result => {
+        this.setUploadStatus(block.cid.toString(), result);
+      });
     }
   }
-  */
+
+  private setUploadStatus(cid: string, result: UploadResult | 'uploading') {
+    // We need to create a new Map to trigger reactivity.
+    const statusMap = new Map(this.uploadStatus());
+    statusMap.set(cid, result);
+    this.uploadStatus.set(statusMap);
+  }
 
   async init() {
     /*

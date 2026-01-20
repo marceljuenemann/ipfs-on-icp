@@ -1,3 +1,23 @@
-IPFS Demo
+<div class="container mt-4">
+  <h1>IPFS on ICP</h1>
 
-<router-outlet />
+
+
+
+  <h2 class="mt-4">Upload</h2>
+
+  <div class="mb-3">
+    <input class="form-control" type="file" id="fileInput" (change)="onFileSelected($event)">
+  </div>
+
+  <button class="btn btn-primary" (click)="uploadFile()" [disabled]="!selectedFile">
+    Upload
+  </button>
+
+  <div *ngIf="uploadResult" class="alert alert-success mt-3">
+    {{ uploadResult }}
+  </div>
+
+
+
+</div>

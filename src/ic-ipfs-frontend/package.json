@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build:sw": "esbuild src/sw/sw.ts --bundle --outfile=dist/sw/sw.js --format=iife --target=es2020 --minify",
+    "build": "npm run build:sw && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

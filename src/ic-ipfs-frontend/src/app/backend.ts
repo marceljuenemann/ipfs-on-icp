@@ -27,8 +27,8 @@ export class Backend {
   }
 
   async uploadBlock(block: IpfsBlock): Promise<UploadResult> {
-    const msg = await this.actor.greet(block.cid.toString());
-    console.log(msg);
+    const result = await this.actor.store_block(block.cid.toString(), block.bytes);
+    console.log(result);
     return 'success';
   }
 

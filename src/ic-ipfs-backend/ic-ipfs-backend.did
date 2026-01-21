@@ -1,5 +1,21 @@
-type Result = variant { Ok; Err : text };
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : blob;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : blob;
+  headers : vec record { text; text };
+  upgrade : opt bool;
+  status_code : nat16;
+};
+type Result = variant { Ok : bool; Err : text };
 service : {
-  greet : (text) -> (text) query;
-  store_block : (text, blob) -> (Result);
+  // Stores an IPFS block identified by its CID.
+  // Returns true if the block was inserted and
+  // false if the block already existed.
+  blockstore_put : (text, blob) -> (Result);
+  http_request : (HttpRequest) -> (HttpResponse) query;
 }

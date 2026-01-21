@@ -13,9 +13,8 @@ self.skipWaiting();
 const verifiedFetch = createVerifiedFetch({
   gateways: [
     // TODO: configure based on canister environment var.
-    'http://uxrrr-q7777-77774-qaaaq-cai.raw.localhost:4943'
-    // TODO: Use public gateway as fallback
-    // 'https://trustless-gateway.link'
+    'http://uxrrr-q7777-77774-qaaaq-cai.raw.localhost:4943',
+    'https://trustless-gateway.link'
   ],
   routers: [],  // No p2p fetching.
   allowInsecure: true,  // TODO: dev only
@@ -28,6 +27,7 @@ registerRoute(
   // TODO: Do not allow for direct navigations, otherwise every file could read cookies.
   ({ url }) => url.pathname.startsWith('/ipfs/') || url.pathname.startsWith('/ipns/'),
   async ({ url }) => {
+    // TODO: Handle errors.
     const fetch = await verifiedFetch;
     return await fetch(url.pathname);
   }

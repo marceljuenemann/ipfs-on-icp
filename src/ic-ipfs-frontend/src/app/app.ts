@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { bytesToBlocks, UnixFsBlocks } from './ipfs';
 import { Backend, UploadResult } from './backend';
+import { Workbox } from 'workbox-window';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,9 @@ import { Backend, UploadResult } from './backend';
   styleUrl: './app.css'
 })
 export class App {
+  serviceWorker = new Workbox('/sw.js');
+  serviceWorkerActive = signal(false);
+
   blocksToUpload = signal<UnixFsBlocks | null>(null);
   uploadStatus = signal<Map<string, UploadResult | 'uploading'>>(new Map());
 
@@ -18,36 +22,11 @@ export class App {
     this.installServiceWorker();
   }
 
-  // TODO: clean up
   async installServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register(
-          '/sw.js',
-          { scope: '/' }
-        );
-
-        if (registration.installing) {
-          console.log('Service worker installing');
-        } else if (registration.waiting) {
-          console.log('Service worker installed');
-        } else if (registration.active) {
-          console.log('Service worker active');
-        }
-
-        console.log('Service worker registered successfully:', registration);
-        return registration;
-      } catch (error) {
-        console.error('Service worker registration failed:', error);
-        throw error;
-      }
-    } else {
-      console.warn('Service workers are not supported in this environment');
-      throw new Error('Service workers not supported');
-    }
+    this.serviceWorker.register();
+    await this.serviceWorker.active;
+    this.serviceWorkerActive.set(true);
   }
-
-
 
   async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;

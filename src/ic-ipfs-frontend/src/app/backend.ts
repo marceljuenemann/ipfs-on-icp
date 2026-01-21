@@ -27,9 +27,15 @@ export class Backend {
   }
 
   async uploadBlock(block: IpfsBlock): Promise<UploadResult> {
-    const result = await this.actor.store_block(block.cid.toString(), block.bytes);
-    console.log(result);
-    return 'success';
+    try {
+      const result = await this.actor.blockstore_put(block.cid.toString(), block.bytes);
+      if ('Ok' in result) {
+        return result.Ok ? 'success' : 'duplicate';
+      } else {
+        return { error: result.Err };
+      }
+    } catch (e) {
+      return { error: (e as Error).message };
+    }
   }
-
 }

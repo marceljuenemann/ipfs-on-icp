@@ -1,7 +1,7 @@
-use std::str::FromStr;
+use std::{str::FromStr};
 
 use multihash_codetable::{Code, MultihashDigest};
-use cid::Cid;
+use cid::{Cid};
 use ic_stable_structures::{BTreeMap, DefaultMemoryImpl, Memory};
 
 /// Stores IPFS blocks in stable memory.
@@ -24,7 +24,7 @@ impl<M: Memory> StableBlockstore<M> {
             return Ok(false);
         }
         // TODO: Should we support other hash functions than SHA2-256?
-        if cid.hash().code() != Code::Sha2_256 as u64 {
+        if cid.hash().code() != 0x12 {
             return Err(format!("Unsupported hash function. Only SHA2-256 is supported. Got: {}", cid.hash().code()));
         }
         verify_sha2_256(&data, &hash)?;

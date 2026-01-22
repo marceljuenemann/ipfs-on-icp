@@ -11,11 +11,13 @@ type HttpResponse = record {
   upgrade : opt bool;
   status_code : nat16;
 };
-type Result = variant { Ok : bool; Err : text };
+type Result = variant { Ok; Err : text };
+type Result_1 = variant { Ok : bool; Err : text };
 service : {
+  admin_set_password : (text, text) -> (Result);
   // Stores an IPFS block identified by its CID.
   // Returns true if the block was inserted and
   // false if the block already existed.
-  blockstore_put : (text, blob) -> (Result);
+  blockstore_put : (text, blob, text) -> (Result_1);
   http_request : (HttpRequest) -> (HttpResponse) query;
 }

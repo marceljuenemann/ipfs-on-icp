@@ -37,10 +37,12 @@ export class App {
   }
 
   async uploadBlocks(): Promise<void> {
+    const pw = prompt('Enter admin password:');
+    if (!pw) return;
     const blocks = this.blocksToUpload()!;
     for (const block of blocks.blocks) {
       this.setUploadStatus(block.cid.toString(), 'uploading');
-      this.backend.uploadBlock(block).then(result => {
+      this.backend.uploadBlock(block, pw!).then(result => {
         this.setUploadStatus(block.cid.toString(), result);
       });
     }

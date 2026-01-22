@@ -54,4 +54,21 @@ export class App {
     statusMap.set(cid, result);
     this.uploadStatus.set(statusMap);
   }
+
+  swCode = `
+    import { createVerifiedFetch } from '@helia/verified-fetch';
+
+    const verifiedFetch = createVerifiedFetch({
+      gateways: [
+        'https://2nbkb-wqaaa-aaaaf-qdo5q-cai.raw.icp0.io',  // ICP backend
+        'https://trustless-gateway.link'  // Public IPFS gateway
+      ],
+      routers: [],  // No p2p fetching.
+    })
+
+    registerRoute(({ url }) => url.pathname.startsWith('/ipfs/') || url.pathname.startsWith('/ipns/'),
+      async ({ url }) => {
+        return await (await verifiedFetch)(url.pathname);
+      }
+    );`;
 }

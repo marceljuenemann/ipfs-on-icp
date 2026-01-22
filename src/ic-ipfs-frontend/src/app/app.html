@@ -1,11 +1,31 @@
 <div class="container mt-4">
-  <h1>IPFS on ICP</h1>
-
+  <h1>IPFS on ICP Demo</h1>
+  <p>
+    <a href="https://ipfs.tech/">IPFS</a> (InterPlanetary File System) uses a content-addressed CIDs which allow
+    you to verify the integrity of files on the client side.
+    It also comes with the <a href="https://specs.ipfs.tech/unixfs/">UnixFS</a> standard,
+    which splits large files and entire directories into small blocks. These are organized
+    in a Merkle DAG, such that you can verify individual blocks without downloading the
+    entire directory or file.
+  </p>
+  <p>
+    This demo stores individual blocks on the <a href="https://learn.internetcomputer.org/hc/en-us/articles/33152818663444-What-is-ICP">Internet Computer</a>,
+    a blockchain network for building permissionless dapps. In fact, even this frontend is stored on-chain
+    and can be verified with the <i>IC-Certificate</i> header (which is also verified by the HTTP gateway).
+  </p>
 
   <h2 class="mt-4">Service Worker</h2>
   <p>
-    TODO: Documentation and code
+    We use a service worker that intercepts all requests to /ipfs/. It first tries to
+    fetch blocks from the ICP backend, and falls back to the public IPFS gateway. All
+    blocks are verified on the client side. The service worker could also be used for
+    caching as blocks can never change.
   </p>
+  <div class="alert alert-secondary">
+    <pre>{{ swCode }}</pre>
+  </div>
+
+
   @if (!serviceWorkerActive()) {
     <div class="alert alert-info">
       Service worker is being installed...
@@ -16,38 +36,50 @@
     </div>
 
 
-    <h2 class="mt-4">Image</h2>
+    <h2 class="mt-4">Example: Image</h2>
+    <p>We can just use /ipfs/ URLs in our HTML now:</p>
+    <div class="alert alert-secondary">
+      <pre>&lt;img src="/ipfs/bafkreievn6tevoumqtahuywyrzk4nydbnudg5cq3b3auzosrqkz2frczbm"&gt;</pre>
+    </div>
+    <img src="/ipfs/bafkreievn6tevoumqtahuywyrzk4nydbnudg5cq3b3auzosrqkz2frczbm" alt="Example image from IPFS via service worker">
 
-    <img src="/ipfs/bafkreihz6qb5zw72n4c5n4edhhttd4b3kmtx4ehbkj352elvkxvv4h4ubm" alt="Example image from IPFS via service worker" class="" width="400">
 
-
-    <h2 class="mt-4">Video</h2>
-
+    <h2 class="mt-4">Example: Video</h2>
+    <p>
+      We can even integreate videos! The service worker will parse the browser's HTTP
+      range requests and only fetch the necessary blocks. All blocks are still verified
+      based on the hash of the file.
+    </p>
+    <div class="alert alert-secondary">
+      <pre>&lt;video width="600" controls&gt;
+  &lt;source src="/ipfs/bafybeigxhlez6vidpmu75nq4knense5tns3fnmawboar6huyx3tcknb7ou"&gt;
+&lt;/video&gt;</pre>
+    </div>
     <video width="600" controls>
       <source src="/ipfs/bafybeigxhlez6vidpmu75nq4knense5tns3fnmawboar6huyx3tcknb7ou">
       Your browser does not support the video tag.
     </video>
 
 
-
-    <h2 class="mt-4">Public IPFS Gateway</h2>
-    - Public
-    - Also shows directories.
-
+    <h2 class="mt-4">Example: Public IPFS Gateway</h2>
+    <p>
+      In this example we fetch the Wikipedia logo from the public IPFS network.
+      This also demonstrates fetching specific files from an archive, as the logo
+      is embedded in an entire dump of the Wikipedia.
+    </p>
+    <div class="alert alert-secondary">
+      <pre>&lt;img src="/ipfs/bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/I/Wikipedia-logo-v2.svg.png.webp"&gt;</pre>
+    </div>
     <img src="/ipfs/bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/I/Wikipedia-logo-v2.svg.png.webp" alt="Wikipedia logo">
 
 
     <h2 class="mt-4">Upload</h2>
-
     <p>
-      Selected files and directories will be split into IPFS blocks of no more than 1MB
-      using the <a href="https://specs.ipfs.tech/unixfs/">UnixFS</a> standard.
+      This upload form splits large files into block of 1MB or less.
     </p>
-
     <div class="mb-3">
       <input class="form-control" type="file" id="fileInput" (change)="onFileSelected($event)">
     </div>
-
     <div *ngIf="blocksToUpload()" class="alert alert-info mt-3">
       <div><b>Root CID:</b> {{ blocksToUpload()?.rootCid?.toString() }}</div>
       <div><b>Blocks:</b></div>

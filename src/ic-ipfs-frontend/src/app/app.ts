@@ -24,7 +24,7 @@ export class App {
 
   async installServiceWorker() {
     this.serviceWorker.register();
-    await this.serviceWorker.active;
+    await this.serviceWorker.controlling;
     this.serviceWorkerActive.set(true);
   }
 

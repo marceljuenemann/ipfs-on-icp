@@ -17,13 +17,19 @@ thread_local! {
     static BLOCKSTORE: RefCell<StableBlockstore<Memory>> = RefCell::new(
         StableBlockstore::init(MEMORY_MANAGER.with(|m| m.borrow().get(MEMORY_ID_BLOCKSTORE))),
     );
+
+    // Simple admin password to prevent people from uploading to the production canister.
+    static ADMIN_PASSWORD: RefCell<String> = RefCell::new("admin".to_string());
 }
 
 /// Stores an IPFS block identified by its CID.
 /// Returns true if the block was inserted and
 /// false if the block already existed.
 #[ic_cdk::update]  // TODO: Guard the upload. Maybe also inspect message?
-fn blockstore_put(cid_str: String, data: Vec<u8>) -> Result<bool, String> {
+fn blockstore_put(cid_str: String, data: Vec<u8>, password: String) -> Result<bool, String> {
+    if password != ADMIN_PASSWORD.with(|p| p.borrow().clone()) {
+        return Err("Invalid admin password".to_string());
+    }
     let cid = parse_cid(cid_str)?;
     BLOCKSTORE.with(|bs| bs.borrow_mut().put(&cid, data))
 }
@@ -56,6 +62,15 @@ fn http_request(req: HttpRequest) -> HttpResponse {
     }
 
     return HttpResponse::not_found("".as_bytes(), vec![]).build();
+}
+
+#[ic_cdk::update]  // TODO: Guard the upload. Maybe also inspect message?
+fn admin_set_password(old_password: String, new_password: String) -> Result<(), String> {
+    if old_password != ADMIN_PASSWORD.with(|p| p.borrow().clone()) {
+        return Err("Invalid admin password".to_string());
+    }
+    ADMIN_PASSWORD.with(|p| *p.borrow_mut() = new_password);
+    Ok(())
 }
 
 ic_cdk::export_candid!();

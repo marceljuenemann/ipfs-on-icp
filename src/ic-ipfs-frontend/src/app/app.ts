@@ -37,10 +37,12 @@ export class App {
   }
 
   async uploadBlocks(): Promise<void> {
+    const pw = prompt('Enter admin password:');
+    if (!pw) return;
     const blocks = this.blocksToUpload()!;
     for (const block of blocks.blocks) {
       this.setUploadStatus(block.cid.toString(), 'uploading');
-      this.backend.uploadBlock(block).then(result => {
+      this.backend.uploadBlock(block, pw!).then(result => {
         this.setUploadStatus(block.cid.toString(), result);
       });
     }
@@ -52,4 +54,21 @@ export class App {
     statusMap.set(cid, result);
     this.uploadStatus.set(statusMap);
   }
+
+  swCode = `
+    import { createVerifiedFetch } from '@helia/verified-fetch';
+
+    const verifiedFetch = createVerifiedFetch({
+      gateways: [
+        'https://2nbkb-wqaaa-aaaaf-qdo5q-cai.raw.icp0.io',  // ICP backend
+        'https://trustless-gateway.link'  // Public IPFS gateway
+      ],
+      routers: [],  // No p2p fetching.
+    })
+
+    registerRoute(({ url }) => url.pathname.startsWith('/ipfs/') || url.pathname.startsWith('/ipns/'),
+      async ({ url }) => {
+        return await (await verifiedFetch)(url.pathname);
+      }
+    );`;
 }

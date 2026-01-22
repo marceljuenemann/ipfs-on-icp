@@ -13,7 +13,7 @@ self.skipWaiting();
 const verifiedFetch = createVerifiedFetch({
   gateways: [
     // TODO: configure based on canister environment var.
-    'http://uxrrr-q7777-77774-qaaaq-cai.raw.localhost:4943',
+    'https://2nbkb-wqaaa-aaaaf-qdo5q-cai.raw.icp0.io',
     'https://trustless-gateway.link'
   ],
   routers: [],  // No p2p fetching.

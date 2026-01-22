@@ -13,9 +13,9 @@ import * as backend_declarations from "declarations/ic-ipfs-backend/ic-ipfs-back
 // @ts-ignore
 globalThis.process = { env: {
   DFX_NETWORK: 'local',
-  CANISTER_ID_IC_IPFS_FRONTEND: 'u6s2n-gx777-77774-qaaba-cai',
-  CANISTER_ID_IC_IPFS_BACKEND: 'uxrrr-q7777-77774-qaaaq-cai',
-  CANISTER_ID: 'u6s2n-gx777-77774-qaaba-cai',
+  CANISTER_ID_IC_IPFS_FRONTEND: '2yg3m-xyaaa-aaaaf-qdo6a-cai',
+  CANISTER_ID_IC_IPFS_BACKEND: '2nbkb-wqaaa-aaaaf-qdo5q-cai',
+  CANISTER_ID: '2yg3m-xyaaa-aaaaf-qdo6a-cai',
 }};
 
 // TODO: Set process.env with custom webpack. Currently hacked into index.html

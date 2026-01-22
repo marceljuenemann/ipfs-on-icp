@@ -9,6 +9,15 @@ import type { IDL } from '@dfinity/candid';
 
 import * as backend_declarations from "declarations/ic-ipfs-backend/ic-ipfs-backend.did.js";
 
+// TODO: Inject this with webpack instead
+// @ts-ignore
+globalThis.process = { env: {
+  DFX_NETWORK: 'local',
+  CANISTER_ID_IC_IPFS_FRONTEND: 'u6s2n-gx777-77774-qaaba-cai',
+  CANISTER_ID_IC_IPFS_BACKEND: 'uxrrr-q7777-77774-qaaaq-cai',
+  CANISTER_ID: 'u6s2n-gx777-77774-qaaba-cai',
+}};
+
 // TODO: Set process.env with custom webpack. Currently hacked into index.html
 // TODO: Use injection tokens to be more angular like.
 export const BACKEND_CANISTER_ID = (process as any).env.CANISTER_ID_IC_IPFS_BACKEND;

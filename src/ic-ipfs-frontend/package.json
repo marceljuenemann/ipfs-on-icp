@@ -32,6 +32,7 @@
     "@dfinity/agent": "^3.4.3",
     "@helia/verified-fetch": "^6.2.0",
     "@icp-sdk/core": "^5.0.0",
+    "bootstrap": "^5.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "workbox-routing": "^7.4.0",
